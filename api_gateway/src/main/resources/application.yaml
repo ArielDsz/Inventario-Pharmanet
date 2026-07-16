@@ -12,37 +12,37 @@ spring:
           routes:
 
             - id: usuario-service
-              uri: lb://USUARIO-SERVICE
+              uri: lb://MS-USUARIO
               predicates:
                 - Path=/api/v1/usuarios/**
 
-            - id: sucursal-service
-              uri: lb://SUCURSAL-SERVICE
+            - id: ms-sucursal
+              uri: lb://MS-SUCURSAL
               predicates:
                 - Path=/api/v1/sucursales/**
 
             - id: ubicacion-service
-              uri: lb://UBICACION-SERVICE
+              uri: lb://MS-UBICACION
               predicates:
                 - Path=/api/v1/ubicaciones/**
 
             - id: producto-service
-              uri: lb://PRODUCTO-SERVICE
+              uri: lb://MS-PRODUCTO
               predicates:
                 - Path=/api/v1/productos/**
                 
             - id: venta-service
-              uri: lb://VENTA-SERVICE
+              uri: lb://MS-VENTA
               predicates:
                 - Path=/api/v1/ventas/**
 
             - id: inventario-service
-              uri: lb://INVENTARIO-SERVICE
+              uri: lb://MS-INVENTARIO
               predicates:
                 - Path=/api/v1/inventarios/**
 
             - id: abastecimiento-service
-              uri: lb://ABASTECIMIENTO-SERVICE
+              uri: lb://MS-ABASTECIMIENTO
               predicates:
                 - Path=/api/v1/recepciones/**
 

@@ -3,12 +3,14 @@ services:
   eureka-server:
     build: ./eureka_server
     container_name: eureka-server
+    image: eureka-server
     ports:
       - "8761:8761"
 
   api-gateway:
     build: ./api_gateway
     container_name: api-gateway
+    image: api-gateway
     ports:
       - "8080:8080"
     depends_on:
@@ -16,15 +18,17 @@ services:
     environment:
       EUREKA_URL: http://eureka-server:8761/eureka
 
+  # ==========================
   # BASES DE DATOS
+  # =========================
 
   mysql-sucursal:
     image: mysql:8
     container_name: mysql-sucursal
     ports:
-      - "3306:3306"
+      - "33011:3306"
     environment:
-      MYSQL_DATABASE: sucursal_db
+      MYSQL_DATABASE: bd_sucursal
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
@@ -35,17 +39,18 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_DATABASE: ubicacion_db
+      MYSQL_DATABASE: bd_ubicacion
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
+
   mysql-producto:
     image: mysql:8
     container_name: mysql-producto
     ports:
       - "3308:3306"
     environment:
-      MYSQL_DATABASE: producto_db
+      MYSQL_DATABASE: bd_producto
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
@@ -56,7 +61,7 @@ services:
     ports:
       - "3309:3306"
     environment:
-      MYSQL_DATABASE: venta_db
+      MYSQL_DATABASE: bd_venta
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
@@ -67,7 +72,7 @@ services:
     ports:
       - "3310:3306"
     environment:
-      MYSQL_DATABASE: usuario_db
+      MYSQL_DATABASE: bd_usuario
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
@@ -78,7 +83,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: inventario_db
+      POSTGRES_DB: bd_inventario
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
 
@@ -88,106 +93,113 @@ services:
     ports: 
       - "5433:5432"
     environment:
-      POSTGRES_DB: abastecimiento_db
+      POSTGRES_DB: bd_abastecimiento
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
 
   # MICROSERVICIOS
     
-  sucursal-service:
-    build: ./sucursal_service
-    container_name: sucursal-service
+  ms-sucursal:
+    build: ./ms-sucursal
+    image: ms-sucursal
+    container_name: ms-sucursal
     ports:
       - "8088:8088"
     depends_on:
       - eureka-server
       - mysql-sucursal
     environment:
-      DB_URL: jdbc:mysql://mysql-sucursal:3306/sucursal_db
+      DB_URL: jdbc:mysql://mysql-sucursal:3306/bd_sucursal
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
 
-  ubicacion-service:
-    build: ./ubicacion_service
-    container_name: ubicacion-service
+  ms-ubicacion:
+    build: ./ms-ubicacion
+    image: ms-ubicacion
+    container_name: ms-ubicacion
     ports:
       - "8087:8087"
     depends_on:
       - eureka-server
       - mysql-ubicacion
     environment:
-      DB_URL: jdbc:mysql://mysql-ubicacion:3306/ubicacion_db
+      DB_URL: jdbc:mysql://mysql-ubicacion:3306/bd_ubicacion
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
 
-  producto-service:
-    build: ./producto_service
-    container_name: producto-service
+  ms-producto:
+    build: ./ms-producto
+    image: ms-producto
+    container_name: ms-producto
     ports:
       - "8083:8083"
     depends_on:
       - eureka-server
       - mysql-producto
     environment:
-      DB_URL: jdbc:mysql://mysql-producto:3306/producto_db
+      DB_URL: jdbc:mysql://mysql-producto:3306/bd_producto
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
 
-  venta-service:
-    build: ./venta_service
-    container_name: venta-service
+  ms-venta:
+    build: ./ms-venta
+    image: ms-venta
+    container_name: ms-venta
     ports:
       - "8086:8086"
     depends_on:
       - eureka-server
       - mysql-venta
     environment:
-      DB_URL: jdbc:mysql://mysql-venta:3306/venta_db
+      DB_URL: jdbc:mysql://mysql-venta:3306/bd_venta
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
 
-  usuario-service:                              # <--- ¡MODIFICADO A MYSQL!
-    build: ./usuario_service
-    container_name: usuario-service
+  ms-usuario:                              # <--- ¡MODIFICADO A MYSQL!
+    build: ./ms-usuario
+    image: ms-usuario
+    container_name: ms-usuario
     ports:
       - "8082:8082"
     depends_on:
       - eureka-server
       - mysql-usuario
     environment:
-      DB_URL: jdbc:mysql://mysql-usuario:3306/usuario_db?allowPublicKeyRetrieval=true&useSSL=false
+      DB_URL: jdbc:mysql://mysql-usuario:3306/bd_usuario
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
 
-  inventario-service:
-    build: ./inventario_service
-    container_name: inventario-service
+  ms-inventario:
+    build: ./ms-inventario
+    image: ms-inventario
+    container_name: ms-inventario
     ports:
       - "8084:8084"
     depends_on:
       - eureka-server
       - postgres-inventario
     environment:
-      DB_URL: jdbc:postgresql://postgres-inventario:5432/inventario_db
+      DB_URL: jdbc:postgresql://postgres-inventario:5432/bd_inventario
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
 
-  abastecimiento-service:
-    build: ./abastecimiento_service
-    container_name: abastecimiento-service
+  ms-abastecimiento:
+    build: ./ms-abastecimiento
+    image: ms-abastecimiento
+    container_name: ms-abastecimiento
     ports:
       - "8085:8085"
     depends_on:
       - eureka-server
       - postgres-abastecimiento
     environment:
-      DB_URL: jdbc:postgresql://postgres-abastecimiento:5432/abastecimiento_db
+      DB_URL: jdbc:postgresql://postgres-abastecimiento:5432/bd_abastecimiento
       DB_USERNAME: admin
       DB_PASSWORD: admin
       EUREKA_URL: http://eureka-server:8761/eureka
